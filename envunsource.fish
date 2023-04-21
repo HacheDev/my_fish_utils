@@ -5,12 +5,10 @@
 # Usage: envsource <path/to/env>
 
 function envunsource
-  for line in (cat $argv | grep -v '^#' | grep -v '^\s*$')
+  for line in (cat $argv | grep -v '^#' | grep -v '^\s*$' | grep -E '^\s*(.*)=.*$')
     set item (string split -m 1 '=' $line)
-    set chars_to_remove "'\""
-    set result (string trim --chars=$chars_to_remove $item[1])
-    echo "Deleting key $result"
-    set -e (echo $result)
-    echo "Deleted key $result"
+    echo "Deleting key $item[1]"cp
+    set -e (echo $item[1])
+    echo "Deleted key $item[1]"
   end
 end
