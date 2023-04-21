@@ -7,7 +7,7 @@
 function envunsource
   for line in (cat $argv | grep -v '^#' | grep -v '^\s*$' | grep -E '^\s*(.*)=.*$')
     set item (string split -m 1 '=' $line)
-    echo "Deleting key $item[1]"cp
+    echo "Deleting key $item[1]"
     set -e (echo $item[1])
     echo "Deleted key $item[1]"
   end
