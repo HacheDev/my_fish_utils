@@ -6,7 +6,7 @@
 
 function envsource
 
-    #First we save the number of arguments
+    #First we save the number of arguments and the valid options of the command
     set num_of_args (count $argv)
     set valid_options b e g l p q t u U x
 
