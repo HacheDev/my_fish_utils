@@ -8,7 +8,7 @@ function envsource
 
     #First we save the number of arguments and the valid options of the command
     set num_of_args (count $argv)
-    set valid_options b e g l p q t u U x
+    set valid_options f g l U e a p u q n x
 
     # Check if number of args is 2
     # if true, check if first argument starts with hyphen - and is a valid option of set command
