@@ -48,13 +48,6 @@ function envsource
             echo "Deleted variable $item[1]"
 
         else
-            # Remove quotes or double quotes from values when they surround it
-            # (since fish does not treat them as special chars when using set command)
-            # It only removes the first of them that is found on the value
-            set chars_to_remove "'\""
-            set first_char (echo $item[2] | grep -o "[$chars_to_remove]" | head -1)
-            set item[2] (echo $item[2] | string trim --chars=$first_char)
-
             # Set the shell variable with the options passed (or the default -gx)
             set $options $item[1] $item[2]
             echo "Exported variable $item[1] with value $item[2] and options $options"
