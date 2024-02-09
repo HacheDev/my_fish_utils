@@ -2,13 +2,22 @@
 # e.g. ~/.config/fish/functions/envsource.fish
 # If any change is made, source this file
 #sortin
-# Usage: envsource <path/to/env>
+# Usage: envsource <path/to/env> [options]
+# Options:
+# -e: Deletes the variable from the shell environment.
+# -g: Assigns the value of the variable to the shell variable and gives it the global scope.
+# -l: Assigns the value of the variable to the shell variable and gives it the local scope.
+# -p: Causes the values to be prepended to the current set of values for the variable. This can be used with --append to both append and prepend at the same time.
+# -q: Does not display the variable and its value.
+# -u: Causes the variable to NOT be exported to child processes.
+# -U: Sets the variable as a universal variable.
+
 
 function envsource
 
-    #First we save the number of arguments and the valid options of the command
+    # First we save the number of arguments and the valid options of the command
     set num_of_args (count $argv)
-    set valid_options b e g l p q t u U x
+    set valid_options e g l p q u U x
 
     # Check if number of args is 2
     # if true, check if first argument starts with hyphen - and is a valid option of set command

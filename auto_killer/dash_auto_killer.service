@@ -1,0 +1,9 @@
+[Unit]
+Description=Auto Killer Script
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/dash /home/hache/dev/utils/auto_killer.dash
+
+[Install]
+WantedBy=multi-user.target
