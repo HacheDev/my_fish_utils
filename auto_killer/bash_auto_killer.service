@@ -1,9 +1,9 @@
 [Unit]
-Description=Auto Killer Script
+Description=Auto Killer Bash Script
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/bash /home/hache/dev/utils/auto_killer.bash
+ExecStart=/usr/bin/bash /home/hache/dev/my_shell_utils/auto_killer/auto_killer.bash
 
 [Install]
 WantedBy=multi-user.target

@@ -1,9 +1,9 @@
 [Unit]
-Description=Auto Killer Script
+Description=Auto Killer Fish Script
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/fish /home/hache/dev/utils/auto_killer.fish
+ExecStart=/usr/bin/fish /home/hache/dev/my_shell_utils/auto_killer/auto_killer.fish
 
 [Install]
 WantedBy=multi-user.target
