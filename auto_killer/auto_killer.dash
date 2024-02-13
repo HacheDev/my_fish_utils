@@ -2,7 +2,7 @@
 
 # Default values
 num_cores=12
-ram_threshold=90  # This will be the total RAM usage threshold
+ram_threshold=90  # This will be the total_ram RAM usage threshold
 cpu_per_core_threshold=90 # This will be the CPU usage threshold per core
 
 # Parse arguments
@@ -36,17 +36,25 @@ check_repeating_time=3
 
 while true
 do
-    # Calculate total RAM usage
-    total_ram_usage=$(ps -aux | awk '{sum += $4} END {print sum}')
+    # Get memory usage details, including buffers and cache
+    # Get total_ram and free_ram memory
+    mem_info=$(free | awk '/Mem:/{print $2, $7}')
+    set -- $mem_info
+    total_ram=$1
+    free_ram=$2
 
-    # Calculate total CPU usage
-    total_cpu_usage=$(ps -aux | awk '{sum += $3} END {print sum}')
+    echo "Total RAM: $total_ram, Free RAM: $free_ram"
 
-    # Check if total RAM usage is greater than the threshold
-    ram_comparison=$(echo "$total_ram_usage > $ram_threshold" | bc -l)
-    if [ "$ram_comparison" -eq 1 ]
+    # Calculate total_ram RAM usage
+    total_ram_usage=$((total_ram - free_ram))
+    total_ram_usage_percentage=$((total_ram_usage * 100 / total_ram))
+
+    echo "Total RAM usage: $total_ram_usage, Total RAM usage percentage: $total_ram_usage_percentage%"
+
+    # Check if total_ram RAM usage is greater than the threshold
+    if [ "$total_ram_usage" -gt "$((ram_threshold * total_ram / 100))" ];
     then
-        echo "Total RAM usage ($total_ram_usage%) exceeds threshold ($ram_threshold%). Consider taking action."
+        echo "Total RAM usage ($total_ram_usage_percentage%) exceeds threshold ($ram_threshold%). Proceeding to kill the process with the highest RAM usage."
 
         # Find the process with the highest RAM usage
         set -- $(ps -aux --sort=-%mem | awk 'NR==2{print $2, $4}')
@@ -59,12 +67,20 @@ do
         echo "Process ($highest_ram_pid) killed."
     fi
 
+    # Calculate total CPU usage with only two decimal points
+    total_cpu_usage=$(ps -aux | awk '{sum += $3} END {print sum}')
+    total_cpu_usage_percentage=$(echo "scale=2; $total_cpu_usage" | bc -l)
+    echo "Total CPU usage: $total_cpu_usage%"
+    echo "Total CPU usage percentage: $total_cpu_usage_percentage%"
+
     # Check if total CPU usage is greater than the threshold
-    total_cpu_usage_adjusted=$(echo "$total_cpu_usage / $num_cores" | bc -l)
-    cpu_comparison=$(echo "$total_cpu_usage_adjusted > $cpu_per_core_threshold" | bc -l)
+    total_cpu_usage_percentage_adjusted=$(echo "scale=2; $total_cpu_usage_percentage / $num_cores" | bc -l)
+    echo "Total CPU usage per core: $total_cpu_usage_percentage_adjusted%"
+
+    cpu_comparison=$(echo "$total_cpu_usage_percentage_adjusted > $cpu_per_core_threshold" | bc -l)
     if [ "$cpu_comparison" -eq 1 ]
     then
-        echo "Total CPU usage per core ($total_cpu_usage_adjusted%) exceeds threshold ($cpu_per_core_threshold%). Consider taking action."
+        echo "Total CPU usage per core ($total_cpu_usage_percentage_adjusted%) exceeds threshold ($cpu_per_core_threshold%). Consider taking action."
 
         # Find the process with the highest CPU usage
         set -- $(ps -aux --sort=-%cpu | awk 'NR==2{print $2, $3}')
